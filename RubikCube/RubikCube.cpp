@@ -22,6 +22,28 @@ bool cubeSolved = false;
 //face 5: green (left)
 //face 6 blue opposite to 5 (right)
 
+int heuristic(int*** cube, int*** finalCube)
+{
+	int manhattanDistance = 0;
+	for (int i = 0; i < 6; i++)
+		for (int j = 0; j < 3; j++)
+			for (int k = 0; k < 3; k++)
+			{
+				//if a cube tile is not at its supposed position
+				if (cube[i][j][k] != finalCube[i][j][k])
+				{
+					int l;
+					//find out on which face number the tile is
+					for (l = 0; l < 6; l++)
+					{
+						if (cube[l][j][k] == finalCube[i][j][k])
+							manhattanDistance += abs(l - i);
+					}				
+				}
+			}
+	return manhattanDistance;
+}
+
 
 void inputCube(int*** cube)
 {
@@ -304,191 +326,191 @@ void moveCube(int*** cube, int faceNum, char move)
 			cout << "Invalid face number!!" << endl;
 			return;
 		}
-		case 'A': //anti-clockwise rotation
-			if (faceNum == 0)
-			{
-				rotateMatrixAntiClockwise(cube[0]);
+	case 'A': //anti-clockwise rotation
+		if (faceNum == 0)
+		{
+			rotateMatrixAntiClockwise(cube[0]);
 
-				//store right values from (orange) top face 
-				int a = cube[2][0][2];
-				int b = cube[2][1][2];
-				int c = cube[2][2][2];
+			//store right values from (orange) top face 
+			int a = cube[2][0][2];
+			int b = cube[2][1][2];
+			int c = cube[2][2][2];
 
-				//move right values in (blue) right face to (orange) top face
-				cube[2][0][2] = cube[5][0][2];
-				cube[2][1][2] = cube[5][1][2];
-				cube[2][2][2] = cube[5][2][2];
+			//move right values in (blue) right face to (orange) top face
+			cube[2][0][2] = cube[5][0][2];
+			cube[2][1][2] = cube[5][1][2];
+			cube[2][2][2] = cube[5][2][2];
 
-				//move right values in (red) bottom face to (blue) right face
-				cube[5][0][2] = cube[3][0][2];
-				cube[5][1][2] = cube[3][1][2];
-				cube[5][2][2] = cube[3][2][2];
+			//move right values in (red) bottom face to (blue) right face
+			cube[5][0][2] = cube[3][0][2];
+			cube[5][1][2] = cube[3][1][2];
+			cube[5][2][2] = cube[3][2][2];
 
-				//move right values in (green) left face to (red) bottom face
-				cube[3][0][2] = cube[4][0][2];
-				cube[3][1][2] = cube[4][1][2];
-				cube[3][2][2] = cube[4][2][2];
+			//move right values in (green) left face to (red) bottom face
+			cube[3][0][2] = cube[4][0][2];
+			cube[3][1][2] = cube[4][1][2];
+			cube[3][2][2] = cube[4][2][2];
 
-				//move right values in (orange) top face to (green) left face
-				cube[4][0][2] = a;
-				cube[4][1][2] = b;
-				cube[4][2][2] = c;
-			}
-			else if (faceNum == 1)
-			{
-				rotateMatrixAntiClockwise(cube[1]);
+			//move right values in (orange) top face to (green) left face
+			cube[4][0][2] = a;
+			cube[4][1][2] = b;
+			cube[4][2][2] = c;
+		}
+		else if (faceNum == 1)
+		{
+			rotateMatrixAntiClockwise(cube[1]);
 
-				//store right values from (blue) right face 
-				int a = cube[5][0][2];
-				int b = cube[5][1][2];
-				int c = cube[5][2][2];
+			//store right values from (blue) right face 
+			int a = cube[5][0][2];
+			int b = cube[5][1][2];
+			int c = cube[5][2][2];
 
-				//move right values in (orange) top face to (blue) right face
-				cube[5][0][2] = cube[2][0][2];
-				cube[5][1][2] = cube[2][1][2];
-				cube[5][2][2] = cube[2][2][2];
+			//move right values in (orange) top face to (blue) right face
+			cube[5][0][2] = cube[2][0][2];
+			cube[5][1][2] = cube[2][1][2];
+			cube[5][2][2] = cube[2][2][2];
 
-				//move right values in (green) left face to (orange) top face
-				cube[2][0][2] = cube[4][0][2];
-				cube[2][1][2] = cube[4][1][2];
-				cube[2][2][2] = cube[4][2][2];
+			//move right values in (green) left face to (orange) top face
+			cube[2][0][2] = cube[4][0][2];
+			cube[2][1][2] = cube[4][1][2];
+			cube[2][2][2] = cube[4][2][2];
 
-				//move right values in (red) bottom face to (green) left face
-				cube[4][0][2] = cube[3][0][2];
-				cube[4][1][2] = cube[3][1][2];
-				cube[4][2][2] = cube[3][2][2];
+			//move right values in (red) bottom face to (green) left face
+			cube[4][0][2] = cube[3][0][2];
+			cube[4][1][2] = cube[3][1][2];
+			cube[4][2][2] = cube[3][2][2];
 
-				//move right values in (blue) right face to (red) bottom face
-				cube[3][0][2] = a;
-				cube[3][1][2] = b;
-				cube[3][2][2] = c;
-			}
-			else if (faceNum == 2)
-			{
-				rotateMatrixAntiClockwise(cube[2]);
+			//move right values in (blue) right face to (red) bottom face
+			cube[3][0][2] = a;
+			cube[3][1][2] = b;
+			cube[3][2][2] = c;
+		}
+		else if (faceNum == 2)
+		{
+			rotateMatrixAntiClockwise(cube[2]);
 
-				//store right values from (green) left face 
-				int a = cube[4][0][2];
-				int b = cube[4][1][2];
-				int c = cube[4][2][2];
+			//store right values from (green) left face 
+			int a = cube[4][0][2];
+			int b = cube[4][1][2];
+			int c = cube[4][2][2];
 
-				//move right values in (yellow) back face to (green) left face
-				cube[4][0][2] = cube[1][0][2];
-				cube[4][1][2] = cube[1][1][2];
-				cube[4][2][2] = cube[1][2][2];
+			//move right values in (yellow) back face to (green) left face
+			cube[4][0][2] = cube[1][0][2];
+			cube[4][1][2] = cube[1][1][2];
+			cube[4][2][2] = cube[1][2][2];
 
-				//move right values in (blue) right face to (yellow) back face
-				cube[1][0][2] = cube[5][0][2];
-				cube[1][1][2] = cube[5][1][2];
-				cube[1][2][2] = cube[5][2][2];
+			//move right values in (blue) right face to (yellow) back face
+			cube[1][0][2] = cube[5][0][2];
+			cube[1][1][2] = cube[5][1][2];
+			cube[1][2][2] = cube[5][2][2];
 
-				//move right values in (white) front face to (blue) right face
-				cube[5][0][2] = cube[0][0][2];
-				cube[5][1][2] = cube[0][1][2];
-				cube[5][2][2] = cube[0][2][2];
+			//move right values in (white) front face to (blue) right face
+			cube[5][0][2] = cube[0][0][2];
+			cube[5][1][2] = cube[0][1][2];
+			cube[5][2][2] = cube[0][2][2];
 
-				//move right values in (green) left face to (white) back face
-				cube[0][0][2] = a;
-				cube[0][1][2] = b;
-				cube[0][2][2] = c;
-			}
-			else if (faceNum == 3)
-			{
-				rotateMatrixAntiClockwise(cube[3]);
+			//move right values in (green) left face to (white) back face
+			cube[0][0][2] = a;
+			cube[0][1][2] = b;
+			cube[0][2][2] = c;
+		}
+		else if (faceNum == 3)
+		{
+			rotateMatrixAntiClockwise(cube[3]);
 
-				//store right values from (yellow) back face 
-				int a = cube[1][0][2];
-				int b = cube[1][1][2];
-				int c = cube[1][2][2];
+			//store right values from (yellow) back face 
+			int a = cube[1][0][2];
+			int b = cube[1][1][2];
+			int c = cube[1][2][2];
 
-				//move right values in (green) left face to (yellow) back face
-				cube[1][0][2] = cube[4][0][2];
-				cube[1][1][2] = cube[4][1][2];
-				cube[1][2][2] = cube[4][2][2];
+			//move right values in (green) left face to (yellow) back face
+			cube[1][0][2] = cube[4][0][2];
+			cube[1][1][2] = cube[4][1][2];
+			cube[1][2][2] = cube[4][2][2];
 
-				//move right values in (white) front face to (green) left face  
-				cube[4][0][2] = cube[0][0][2];
-				cube[4][1][2] = cube[0][1][2];
-				cube[4][2][2] = cube[0][2][2];
+			//move right values in (white) front face to (green) left face  
+			cube[4][0][2] = cube[0][0][2];
+			cube[4][1][2] = cube[0][1][2];
+			cube[4][2][2] = cube[0][2][2];
 
-				//move right values in (blue) right face to (white) front face
-				cube[0][0][2] = cube[5][0][2];
-				cube[0][1][2] = cube[5][1][2];
-				cube[0][2][2] = cube[5][2][2];
+			//move right values in (blue) right face to (white) front face
+			cube[0][0][2] = cube[5][0][2];
+			cube[0][1][2] = cube[5][1][2];
+			cube[0][2][2] = cube[5][2][2];
 
-				//move right values in (yellow) back face to (blue) right face   
-				cube[5][0][2] = a;
-				cube[5][1][2] = b;
-				cube[5][2][2] = c;
-			}
-			else if (faceNum == 4)
-			{
-				rotateMatrixAntiClockwise(cube[4]);
+			//move right values in (yellow) back face to (blue) right face   
+			cube[5][0][2] = a;
+			cube[5][1][2] = b;
+			cube[5][2][2] = c;
+		}
+		else if (faceNum == 4)
+		{
+			rotateMatrixAntiClockwise(cube[4]);
 
-				//store right values from (yellow) back face 
-				int a = cube[1][0][2];
-				int b = cube[1][1][2];
-				int c = cube[1][2][2];
+			//store right values from (yellow) back face 
+			int a = cube[1][0][2];
+			int b = cube[1][1][2];
+			int c = cube[1][2][2];
 
-				//move right values in (orange) top face to (yellow) back face
-				cube[1][0][2] = cube[2][0][2];
-				cube[1][1][2] = cube[2][1][2];
-				cube[1][2][2] = cube[2][2][2];
+			//move right values in (orange) top face to (yellow) back face
+			cube[1][0][2] = cube[2][0][2];
+			cube[1][1][2] = cube[2][1][2];
+			cube[1][2][2] = cube[2][2][2];
 
-				//move right values in (white) front face to (orange) bottom face  
-				cube[2][0][2] = cube[0][0][2];
-				cube[2][1][2] = cube[0][1][2];
-				cube[2][2][2] = cube[0][2][2];
+			//move right values in (white) front face to (orange) bottom face  
+			cube[2][0][2] = cube[0][0][2];
+			cube[2][1][2] = cube[0][1][2];
+			cube[2][2][2] = cube[0][2][2];
 
-				//move right values in (red) bottom face to (white) front face  
-				cube[0][0][2] = cube[3][0][2];
-				cube[0][1][2] = cube[3][1][2];
-				cube[0][2][2] = cube[3][2][2];
+			//move right values in (red) bottom face to (white) front face  
+			cube[0][0][2] = cube[3][0][2];
+			cube[0][1][2] = cube[3][1][2];
+			cube[0][2][2] = cube[3][2][2];
 
-				//move right values in (yellow) back face to (red) bottom face   
-				cube[3][0][2] = a;
-				cube[3][1][2] = b;
-				cube[3][2][2] = c;
-			}
-			else if (faceNum == 5)
-			{
-				rotateMatrixAntiClockwise(cube[5]);
+			//move right values in (yellow) back face to (red) bottom face   
+			cube[3][0][2] = a;
+			cube[3][1][2] = b;
+			cube[3][2][2] = c;
+		}
+		else if (faceNum == 5)
+		{
+			rotateMatrixAntiClockwise(cube[5]);
 
-				//store right values from (white) front face 
-				int a = cube[0][0][2];
-				int b = cube[0][1][2];
-				int c = cube[0][2][2];
+			//store right values from (white) front face 
+			int a = cube[0][0][2];
+			int b = cube[0][1][2];
+			int c = cube[0][2][2];
 
-				//move right values in (orange) top face to (white) front face
-				cube[0][0][2] = cube[2][0][2];
-				cube[0][1][2] = cube[2][1][2];
-				cube[0][2][2] = cube[2][2][2];
+			//move right values in (orange) top face to (white) front face
+			cube[0][0][2] = cube[2][0][2];
+			cube[0][1][2] = cube[2][1][2];
+			cube[0][2][2] = cube[2][2][2];
 
-				//move right values in (yellow) back face to (orange) top face  
-				cube[2][0][2] = cube[1][0][2];
-				cube[2][1][2] = cube[1][1][2];
-				cube[2][2][2] = cube[1][2][2];
+			//move right values in (yellow) back face to (orange) top face  
+			cube[2][0][2] = cube[1][0][2];
+			cube[2][1][2] = cube[1][1][2];
+			cube[2][2][2] = cube[1][2][2];
 
-				//move right values in (red) bottom face to (yellow) back face  
-				cube[1][0][2] = cube[3][0][2];
-				cube[1][1][2] = cube[3][1][2];
-				cube[1][2][2] = cube[3][2][2];
+			//move right values in (red) bottom face to (yellow) back face  
+			cube[1][0][2] = cube[3][0][2];
+			cube[1][1][2] = cube[3][1][2];
+			cube[1][2][2] = cube[3][2][2];
 
-				//move right values in (white) front face to (red) bottom face   
-				cube[3][0][2] = a;
-				cube[3][1][2] = b;
-				cube[3][2][2] = c;
-			}
-			else
-			{
-				cout << "Invalid face number!!" << endl;
-				return;
-			}
+			//move right values in (white) front face to (red) bottom face   
+			cube[3][0][2] = a;
+			cube[3][1][2] = b;
+			cube[3][2][2] = c;
+		}
+		else
+		{
+			cout << "Invalid face number!!" << endl;
+			return;
+		}
 	default:
 		break;
 	}
 
-	
+
 }
 
 int*** initCube() {
@@ -500,7 +522,7 @@ int*** initCube() {
 		for (int j = 0; j < 3; j++)
 			newCube[i][j] = new int[3];
 	}
-	
+
 
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -514,9 +536,9 @@ int*** initCube() {
 }
 
 void deallocateCube(int*** cube) {
-	for (int i = 0; i != 6; ++i) 
+	for (int i = 0; i != 6; ++i)
 	{
-		for (int j = 0; j != 3; ++j){
+		for (int j = 0; j != 3; ++j) {
 			delete[] cube[i][j];
 		}
 
@@ -939,7 +961,7 @@ bool deepSearch(int*** cube, int depth) {
 		cubeSolved = true;
 		return true;
 	}
-		
+
 	if (depth == 0)
 		return false;
 
@@ -947,7 +969,7 @@ bool deepSearch(int*** cube, int depth) {
 		int*** tempCube = nextState(cube, i, 'C');
 
 		if (deepSearch(tempCube, depth - 1)) {
-			cout <<"Face "<< i << " turned Clockwise" << endl;
+			cout << "Face " << i << " turned Clockwise" << endl;
 		}
 		deallocateCube(tempCube);
 		if (cubeSolved) return true;
@@ -972,14 +994,14 @@ bool solveCube(int*** cube) {
 	for (int i = 1; i < max_depth; i++) {
 		cout << "DEPTH " << i << endl;
 		if (deepSearch(cube, i)) {
-			//cout << "CUBE SOLVED AT " << i << " DEPTH" << endl;
+			cout << "CUBE SOLVED AT " << i << " DEPTH" << endl;
 			return true;
-		}	
+		}
 		else {
 			cout << "UNABLE TO SOLVE IN " << i << " MOVES" << endl;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -992,15 +1014,18 @@ int main()
 	cout << "Final Cube:" << endl;
 	printCube(finalCube);
 
+	cout << "Heuristic for initial state = " << heuristic(initialCube, finalCube) << endl;
+	cout << "Heuristic for solved state = " << heuristic(finalCube, finalCube) << endl;
 	//rotateCubeClockwise(initialCube, 0);
 	//rotateCubeClockwise(initialCube, 0);
 	//rotateCubeClockwise(initialCube, 0);
 
 	//rotateCubeCounterClockwise(initialCube, 0);
 	//rotateCubeClockwise(initialCube, 1);
-	
+
 	solveCube(initialCube);
 	//printCube(initialCube);
+
 	deallocateCube(initialCube);
 	deallocateCube(finalCube);
 	return 0;
