@@ -55,21 +55,21 @@ void RubiksCube_Class::rotateMatrixClockwise(int mat[3][3]) {
 	}
 }
 
-RubiksCube_Class::RubiksCube_Class(const RubiksCube_Class &RubiksCube_Class) {
+RubiksCube_Class::RubiksCube_Class(const RubiksCube_Class &rubiksCube) {
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 3; j++) {
 			for (int k = 0; k < 3; k++) {
-				this->cube[i][j][k] = RubiksCube_Class.cube[i][j][k];
+				this->cube[i][j][k] = rubiksCube.cube[i][j][k];
 			}
 		}
 	}
 }
 
-void RubiksCube_Class::copyCube(RubiksCube_Class RubiksCube_Class) {
+void RubiksCube_Class::copyCube(RubiksCube_Class rubiksCube) {
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 3; j++) {
 			for (int k = 0; k < 3; k++) {
-				this->cube[i][j][k] = RubiksCube_Class.cube[i][j][k];
+				this->cube[i][j][k] = rubiksCube.cube[i][j][k];
 			}
 		}
 	}
@@ -91,13 +91,13 @@ void RubiksCube_Class::print() {
 	std::cout << std::endl;
 }
 
-bool RubiksCube_Class::isEqual(RubiksCube_Class RubiksCube_Class) {
+bool RubiksCube_Class::isEqual(RubiksCube_Class rubiksCube) {
 	bool isEqual = true;
 
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 3; j++) {
 			for (int k = 0; k < 3; k++) {
-				if (this->cube[i][j][k] != RubiksCube_Class.cube[i][j][k]) {
+				if (this->cube[i][j][k] != rubiksCube.cube[i][j][k]) {
 					isEqual = false;
 					break;
 				}
@@ -472,7 +472,7 @@ void RubiksCube_Class::rotateCubeCounterClockwise(int face) {
 	}
 }
 
-float RubiksCube_Class::heuristic(RubiksCube_Class RubiksCube_Class)
+float RubiksCube_Class::heuristic(RubiksCube_Class rubiksCube)
 {
 	float manhattanDistance = 0;
 	for (int i = 0; i < 6; i++)
@@ -480,7 +480,7 @@ float RubiksCube_Class::heuristic(RubiksCube_Class RubiksCube_Class)
 			for (int k = 0; k < 3; k++)
 			{
 				//if a cube tile is not at its supposed position
-				if (this->cube[i][j][k] != RubiksCube_Class.cube[i][j][k])
+				if (this->cube[i][j][k] != rubiksCube.cube[i][j][k])
 				{
 					int face_original = this->cube[i][j][k];
 					//find out on which face number the tile is
@@ -491,11 +491,11 @@ float RubiksCube_Class::heuristic(RubiksCube_Class RubiksCube_Class)
 	return manhattanDistance;
 }
 
-RubiksCube_Class RubiksCube_Class::nextState(RubiksCube_Class srcCube, int faceNum, char direction) {
+RubiksCube_Class RubiksCube_Class::nextState(int faceNum, char direction) {
 	//Create new cube and copy the current cube into it
 	//Rotate the cube to get the next state
 	RubiksCube_Class newCube;
-	newCube.copyCube(srcCube);
+	newCube.copyCube(*this);
 
 	if (direction == 'C')
 		newCube.rotateCubeClockwise(faceNum);

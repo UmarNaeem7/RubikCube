@@ -79,7 +79,7 @@ bool deepSearch(RubiksCube_Class cube, int depth) {
 		return false;
 
 	for (int i = 0; i < 6; i++) {
-		RubiksCube_Class tempCube = cube.nextState(cube, i, 'C');
+		RubiksCube_Class tempCube = cube.nextState(i, 'C');
 
 		if (deepSearch(tempCube, depth - 1)) {
 			string s = "Face ";
@@ -93,7 +93,7 @@ bool deepSearch(RubiksCube_Class cube, int depth) {
 
 
 	for (int i = 0; i < 6; i++) {
-		RubiksCube_Class tempCube = cube.nextState(cube, i, 'A');
+		RubiksCube_Class tempCube = cube.nextState(i, 'A');
 
 		if (deepSearch(tempCube, depth - 1)) {
 			string s = "Face ";
