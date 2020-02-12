@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 #define N 3
@@ -547,18 +549,6 @@ void deallocateCube(int*** cube) {
 	delete[] cube;
 }
 
-int*** copyCube(int*** destCube, int*** srcCube) {
-
-	//Copy cube into newCube
-	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 3; j++) {
-			for (int k = 0; k < 3; k++) {
-				destCube[i][j][k] = srcCube[i][j][k];
-			}
-		}
-	}
-	return destCube;
-}
 
 bool isEqual(int*** destCube, int*** srcCube) {
 	bool isEqual = true;
@@ -580,7 +570,7 @@ bool isEqual(int*** destCube, int*** srcCube) {
 	return isEqual;
 }
 
-void rotateCubeClockwise(int*** cube, int face) {
+void rotateCubeClockwise(int*** & cube, int face) {
 	int orange1;	int orange2;	int orange3;
 	int blue1;		int blue2;		int blue3;
 	int red1;		int red2;		int red3;
@@ -760,7 +750,7 @@ void rotateCubeClockwise(int*** cube, int face) {
 	}
 }
 
-void rotateCubeCounterClockwise(int*** cube, int face) {
+void rotateCubeCounterClockwise(int*** & cube, int face) {
 	int orange1;	int orange2;	int orange3;
 	int blue1;		int blue2;		int blue3;
 	int red1;		int red2;		int red3;
@@ -940,6 +930,19 @@ void rotateCubeCounterClockwise(int*** cube, int face) {
 	}
 }
 
+int*** copyCube(int*** destCube, int*** srcCube) {
+
+	//Copy cube into newCube
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < 3; k++) {
+				destCube[i][j][k] = srcCube[i][j][k];
+			}
+		}
+	}
+	return destCube;
+}
+
 int*** nextState(int*** srcCube, int faceNum, char direction) {
 	//Create new cube and copy the current cube into it
 	//Rotate the cube to get the next state
@@ -1005,6 +1008,115 @@ bool solveCube(int*** cube) {
 	return false;
 }
 
+int*** aStarAlgorithm(int*** cube, int*** finalCube)
+{
+	vector<int> v;
+	int*** temp1 = initCube();
+	temp1 =	copyCube(temp1, cube);
+	int*** temp2 = initCube();
+	temp2 = copyCube(temp2, cube);
+	int*** temp3 = initCube();
+	temp3 = copyCube(temp3, cube);
+	int*** temp4 = initCube();
+	temp4 = copyCube(temp4, cube);
+	int*** temp5 = initCube();
+	temp5 = copyCube(temp5, cube);
+	int*** temp6 = initCube();
+	temp6 = copyCube(temp6, cube);
+	int*** temp7 = initCube();
+	temp7 = copyCube(temp7, cube);
+	int*** temp8 = initCube();
+	temp8 = copyCube(temp8, cube);
+	int*** temp9 = initCube();
+	temp9 = copyCube(temp9, cube);
+	int*** temp10 = initCube();
+	temp10 = copyCube(temp10, cube);
+	int*** temp11 = initCube();
+	temp11 = copyCube(temp11, cube);
+	int*** temp12 = initCube();
+	temp12 = copyCube(temp12, cube);
+
+	rotateCubeClockwise(temp1, 0);
+	v.push_back(heuristic(temp1, finalCube));
+	rotateCubeClockwise(temp2, 1);
+	v.push_back(heuristic(temp2, finalCube));
+	rotateCubeClockwise(temp3, 2);
+	v.push_back(heuristic(temp3, finalCube));
+	rotateCubeClockwise(temp4, 3);
+	v.push_back(heuristic(temp4, finalCube));
+	rotateCubeClockwise(temp5, 4);
+	v.push_back(heuristic(temp5, finalCube));
+	rotateCubeClockwise(temp6, 5);
+	v.push_back(heuristic(temp6, finalCube));
+
+	rotateCubeCounterClockwise(temp7, 0);
+	v.push_back(heuristic(temp7, finalCube));
+	rotateCubeCounterClockwise(temp8, 1);
+	v.push_back(heuristic(temp8, finalCube));
+	rotateCubeCounterClockwise(temp9, 2);
+	v.push_back(heuristic(temp9, finalCube));
+	rotateCubeCounterClockwise(temp10, 3);
+	v.push_back(heuristic(temp10, finalCube));
+	rotateCubeCounterClockwise(temp11, 4);
+	v.push_back(heuristic(temp11, finalCube));
+	rotateCubeCounterClockwise(temp12, 5);
+	v.push_back(heuristic(temp12, finalCube));
+
+	//find best move i.e least heuristic value
+	int minElementIndex = min_element(v.begin(), v.end()) - v.begin();
+	
+	//make best move
+	if (minElementIndex == 0)
+		copyCube(cube, temp1);
+	else if (minElementIndex == 1)
+		copyCube(cube, temp2);
+	else if (minElementIndex == 2)
+		copyCube(cube, temp3);
+	else if (minElementIndex == 3)
+		copyCube(cube, temp4);
+	else if (minElementIndex == 4)
+		copyCube(cube, temp5);
+	else if (minElementIndex == 5)
+		copyCube(cube, temp6);
+	else if (minElementIndex == 6)
+		copyCube(cube, temp7);
+	else if (minElementIndex == 7)
+		copyCube(cube, temp8);
+	else if (minElementIndex == 8)
+		copyCube(cube, temp9);
+	else if (minElementIndex == 9)
+		copyCube(cube, temp10);
+	else if (minElementIndex == 10)
+		copyCube(cube, temp11);
+	else
+		copyCube(cube, temp12);
+
+	//free up all the space used
+	deallocateCube(temp1);
+	deallocateCube(temp2);
+	deallocateCube(temp3);
+	deallocateCube(temp4);
+	deallocateCube(temp5);
+	deallocateCube(temp6);
+	deallocateCube(temp7);
+	deallocateCube(temp8);
+	deallocateCube(temp9);
+	deallocateCube(temp10);
+	deallocateCube(temp11);
+	deallocateCube(temp12);
+
+	return cube;
+}
+
+void implementaAStar(int*** cube, int*** finalCube)
+{
+	for (int i = 0; i < 20; i++)
+		cube = aStarAlgorithm(cube, finalCube);
+
+	cout << "After A*:" << endl;
+	printCube(cube);
+}
+
 int main()
 {
 	inputCubeFromFile("file.txt");
@@ -1014,8 +1126,8 @@ int main()
 	cout << "Final Cube:" << endl;
 	printCube(finalCube);
 
-	cout << "Heuristic for initial state = " << heuristic(initialCube, finalCube) << endl;
-	cout << "Heuristic for solved state = " << heuristic(finalCube, finalCube) << endl;
+	/*cout << "Heuristic for initial state = " << heuristic(initialCube, finalCube) << endl;
+	cout << "Heuristic for solved state = " << heuristic(finalCube, finalCube) << endl;*/
 	//rotateCubeClockwise(initialCube, 0);
 	//rotateCubeClockwise(initialCube, 0);
 	//rotateCubeClockwise(initialCube, 0);
@@ -1023,8 +1135,9 @@ int main()
 	//rotateCubeCounterClockwise(initialCube, 0);
 	//rotateCubeClockwise(initialCube, 1);
 
-	solveCube(initialCube);
-	//printCube(initialCube);
+	//solveCube(initialCube);
+	
+	implementaAStar(initialCube, finalCube);
 
 	deallocateCube(initialCube);
 	deallocateCube(finalCube);
