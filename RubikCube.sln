@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.779
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RubikCube", "RubikCube\RubikCube.vcxproj", "{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rubik", "rubik\rubik.vcxproj", "{69658740-31C2-4328-AA97-A6054B230E34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,19 +13,19 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Debug|x64.ActiveCfg = Debug|x64
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Debug|x64.Build.0 = Debug|x64
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Debug|x86.ActiveCfg = Debug|Win32
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Debug|x86.Build.0 = Debug|Win32
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Release|x64.ActiveCfg = Release|x64
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Release|x64.Build.0 = Release|x64
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Release|x86.ActiveCfg = Release|Win32
-		{0F2CC958-B7C3-4F40-92FD-2EB450BC4907}.Release|x86.Build.0 = Release|Win32
+		{69658740-31C2-4328-AA97-A6054B230E34}.Debug|x64.ActiveCfg = Debug|x64
+		{69658740-31C2-4328-AA97-A6054B230E34}.Debug|x64.Build.0 = Debug|x64
+		{69658740-31C2-4328-AA97-A6054B230E34}.Debug|x86.ActiveCfg = Debug|Win32
+		{69658740-31C2-4328-AA97-A6054B230E34}.Debug|x86.Build.0 = Debug|Win32
+		{69658740-31C2-4328-AA97-A6054B230E34}.Release|x64.ActiveCfg = Release|x64
+		{69658740-31C2-4328-AA97-A6054B230E34}.Release|x64.Build.0 = Release|x64
+		{69658740-31C2-4328-AA97-A6054B230E34}.Release|x86.ActiveCfg = Release|Win32
+		{69658740-31C2-4328-AA97-A6054B230E34}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0BDF4875-37F5-4E8A-9083-0153B8DE25E7}
+		SolutionGuid = {EEC3B584-3DC2-4EC1-81DF-4AC831A85B9E}
 	EndGlobalSection
 EndGlobal

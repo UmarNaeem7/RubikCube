@@ -1,0 +1,3 @@
+﻿  RubikCube.cpp
+d:\source\repos\rubik\rubik\rubikcube.cpp(35): warning C4018: '<': signed/unsigned mismatch
+  rubik.vcxproj -> D:\source\repos\rubik\Debug\rubik.exe

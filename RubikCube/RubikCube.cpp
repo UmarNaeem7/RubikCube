@@ -83,7 +83,7 @@ bool deepSearch(RubiksCube_Class cube, int depth) {
 
 		if (deepSearch(tempCube, depth - 1)) {
 			string s = "Face ";
-			s += (i+'0');
+			s += (i + '0');
 			s += " turned Clockwise";
 			moveList.push_back(s);
 		}
@@ -97,7 +97,7 @@ bool deepSearch(RubiksCube_Class cube, int depth) {
 
 		if (deepSearch(tempCube, depth - 1)) {
 			string s = "Face ";
-			s += (i+'0');
+			s += (i + '0');
 			s += " turned Counter Clockwise";
 			moveList.push_back(s);
 		}
@@ -146,7 +146,7 @@ RubiksCube_Class aStarAlgorithm(RubiksCube_Class cube) {
 	for (int i = 6; i < 12; i++) {
 		RubiksCube_Class tempCube;
 		tempCube.copyCube(cube);
-		tempCube.rotateCubeCounterClockwise(i-6);
+		tempCube.rotateCubeCounterClockwise(i - 6);
 
 		tempCubes.push_back(tempCube);
 		v.push_back(tempCubes[i].heuristic(finalCube));
@@ -154,7 +154,7 @@ RubiksCube_Class aStarAlgorithm(RubiksCube_Class cube) {
 
 	//find best move i.e least heuristic value
 	int minElementIndex = min_element(v.begin(), v.end()) - v.begin();
-	
+
 	//make best move
 	cube.copyCube(tempCubes[minElementIndex]);
 
@@ -192,7 +192,7 @@ void solveWithAStar(RubiksCube_Class cube)
 			if (cube.isEqual(finalCube)) break;
 		}
 	}
-		
+
 	cout << "A* Result:" << endl;
 	cube.print();
 
@@ -205,11 +205,18 @@ int main()
 
 	cout << "Initial Cube:" << endl;
 	initialCube.print();
-	//cout << "Final Cube:" << endl;
-	//finalCube.print();
 
-	//solveWithIterativeDeepening(initialCube);
-	solveWithAStar(initialCube);
+	int option = 0;
+	cout << "1.Iterative Deepening Search		2. A* search" << endl << endl;
+	cout << "Enter an option = ";
+	cin >> option;
+
+	if (option == 1)
+		solveWithIterativeDeepening(initialCube);
+	else if (option == 2)
+		solveWithAStar(initialCube);
+	else
+		cout << "Invalid choice!" << endl;
 
 	return 0;
 }
