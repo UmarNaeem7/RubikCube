@@ -16,6 +16,7 @@ int*** initCube();
 int*** initialCube = initCube();
 int*** finalCube = initCube();
 bool cubeSolved = false;
+vector<string> moveList;
 
 //face 1: white (front)
 //face 2: yellow opposite to 1 (back)
@@ -24,9 +25,9 @@ bool cubeSolved = false;
 //face 5: green (left)
 //face 6 blue opposite to 5 (right)
 
-int heuristic(int*** cube, int*** finalCube)
+float heuristic(int*** cube, int*** finalCube)
 {
-	int manhattanDistance = 0;
+	float manhattanDistance = 0;
 	for (int i = 0; i < 6; i++)
 		for (int j = 0; j < 3; j++)
 			for (int k = 0; k < 3; k++)
@@ -34,18 +35,32 @@ int heuristic(int*** cube, int*** finalCube)
 				//if a cube tile is not at its supposed position
 				if (cube[i][j][k] != finalCube[i][j][k])
 				{
-					int l;
+					int face_original = cube[i][j][k];
 					//find out on which face number the tile is
-					for (l = 0; l < 6; l++)
-					{
-						if (cube[l][j][k] == finalCube[i][j][k])
-							manhattanDistance += abs(l - i);
-					}				
+					manhattanDistance += abs(face_original - i);		
 				}
 			}
+	manhattanDistance = manhattanDistance / 8;
 	return manhattanDistance;
 }
 
+void printMoveList(int x = 0) {
+	if (x = -1) {//prints movelist in reverse
+		cout << "==============Move List==============" << endl;
+		for (int i = moveList.size()-1; i >= 0; i--) {
+			cout << moveList[i] << endl;
+		}
+		cout << "=====================================" << endl;
+	}
+	else {
+		cout << "==============Move List==============" << endl;
+		for (int i = 0; i < moveList.size(); i++) {
+			cout << moveList[i] << endl;
+		}
+		cout << "=====================================" << endl;
+	}
+	
+}
 
 void inputCube(int*** cube)
 {
@@ -549,7 +564,6 @@ void deallocateCube(int*** cube) {
 	delete[] cube;
 }
 
-
 bool isEqual(int*** destCube, int*** srcCube) {
 	bool isEqual = true;
 
@@ -961,6 +975,7 @@ bool deepSearch(int*** cube, int depth) {
 	//DFS
 	if (isEqual(cube, finalCube)) {
 		cout << "CUBE SOLVED" << endl;
+		copyCube(initialCube, cube);
 		cubeSolved = true;
 		return true;
 	}
@@ -972,7 +987,10 @@ bool deepSearch(int*** cube, int depth) {
 		int*** tempCube = nextState(cube, i, 'C');
 
 		if (deepSearch(tempCube, depth - 1)) {
-			cout << "Face " << i << " turned Clockwise" << endl;
+			string s = "Face ";
+			s += (i+'0');
+			s += " turned Clockwise";
+			moveList.push_back(s);
 		}
 		deallocateCube(tempCube);
 		if (cubeSolved) return true;
@@ -983,7 +1001,10 @@ bool deepSearch(int*** cube, int depth) {
 		int*** tempCube = nextState(cube, i, 'A');
 
 		if (deepSearch(tempCube, depth - 1)) {
-			cout << "Face " << i << " turned Counter Clockwise" << endl;
+			string s = "Face ";
+			s += (i+'0');
+			s += " turned Counter Clockwise";
+			moveList.push_back(s);
 		}
 		deallocateCube(tempCube);
 		if (cubeSolved) return true;
@@ -991,13 +1012,14 @@ bool deepSearch(int*** cube, int depth) {
 	return false;
 }
 
-bool solveCube(int*** cube) {
+bool solveWithIterativeDeepening(int*** cube) {
 	//as rubiks cube can be solved in 20 moves
 	int max_depth = 20;
 	for (int i = 1; i < max_depth; i++) {
 		cout << "DEPTH " << i << endl;
 		if (deepSearch(cube, i)) {
-			cout << "CUBE SOLVED AT " << i << " DEPTH" << endl;
+			//Print list of moves 
+			printMoveList(-1);
 			return true;
 		}
 		else {
@@ -1010,111 +1032,71 @@ bool solveCube(int*** cube) {
 
 int*** aStarAlgorithm(int*** cube, int*** finalCube)
 {
-	vector<int> v;
-	int*** temp1 = initCube();
-	temp1 =	copyCube(temp1, cube);
-	int*** temp2 = initCube();
-	temp2 = copyCube(temp2, cube);
-	int*** temp3 = initCube();
-	temp3 = copyCube(temp3, cube);
-	int*** temp4 = initCube();
-	temp4 = copyCube(temp4, cube);
-	int*** temp5 = initCube();
-	temp5 = copyCube(temp5, cube);
-	int*** temp6 = initCube();
-	temp6 = copyCube(temp6, cube);
-	int*** temp7 = initCube();
-	temp7 = copyCube(temp7, cube);
-	int*** temp8 = initCube();
-	temp8 = copyCube(temp8, cube);
-	int*** temp9 = initCube();
-	temp9 = copyCube(temp9, cube);
-	int*** temp10 = initCube();
-	temp10 = copyCube(temp10, cube);
-	int*** temp11 = initCube();
-	temp11 = copyCube(temp11, cube);
-	int*** temp12 = initCube();
-	temp12 = copyCube(temp12, cube);
+	vector<float> v;
+	vector<int***> tempCubes;
+	string direction[] = { "Clockwise", "Counter-Clockwise" };
 
-	rotateCubeClockwise(temp1, 0);
-	v.push_back(heuristic(temp1, finalCube));
-	rotateCubeClockwise(temp2, 1);
-	v.push_back(heuristic(temp2, finalCube));
-	rotateCubeClockwise(temp3, 2);
-	v.push_back(heuristic(temp3, finalCube));
-	rotateCubeClockwise(temp4, 3);
-	v.push_back(heuristic(temp4, finalCube));
-	rotateCubeClockwise(temp5, 4);
-	v.push_back(heuristic(temp5, finalCube));
-	rotateCubeClockwise(temp6, 5);
-	v.push_back(heuristic(temp6, finalCube));
+	//store all possible moves in a vector
+	for (int i = 0; i < 6; i++) {
+		int*** tempCube = initCube();
+		copyCube(tempCube, cube);
+		rotateCubeClockwise(tempCube, i);
 
-	rotateCubeCounterClockwise(temp7, 0);
-	v.push_back(heuristic(temp7, finalCube));
-	rotateCubeCounterClockwise(temp8, 1);
-	v.push_back(heuristic(temp8, finalCube));
-	rotateCubeCounterClockwise(temp9, 2);
-	v.push_back(heuristic(temp9, finalCube));
-	rotateCubeCounterClockwise(temp10, 3);
-	v.push_back(heuristic(temp10, finalCube));
-	rotateCubeCounterClockwise(temp11, 4);
-	v.push_back(heuristic(temp11, finalCube));
-	rotateCubeCounterClockwise(temp12, 5);
-	v.push_back(heuristic(temp12, finalCube));
+		tempCubes.push_back(tempCube);
+		v.push_back(heuristic(tempCubes[i], finalCube));
+	}
+
+	for (int i = 6; i < 12; i++) {
+		int*** tempCube = initCube();
+		copyCube(tempCube, cube);
+		rotateCubeCounterClockwise(tempCube, i-6);
+
+		tempCubes.push_back(tempCube);
+		v.push_back(heuristic(tempCubes[i], finalCube));
+	}
 
 	//find best move i.e least heuristic value
 	int minElementIndex = min_element(v.begin(), v.end()) - v.begin();
 	
 	//make best move
-	if (minElementIndex == 0)
-		copyCube(cube, temp1);
-	else if (minElementIndex == 1)
-		copyCube(cube, temp2);
-	else if (minElementIndex == 2)
-		copyCube(cube, temp3);
-	else if (minElementIndex == 3)
-		copyCube(cube, temp4);
-	else if (minElementIndex == 4)
-		copyCube(cube, temp5);
-	else if (minElementIndex == 5)
-		copyCube(cube, temp6);
-	else if (minElementIndex == 6)
-		copyCube(cube, temp7);
-	else if (minElementIndex == 7)
-		copyCube(cube, temp8);
-	else if (minElementIndex == 8)
-		copyCube(cube, temp9);
-	else if (minElementIndex == 9)
-		copyCube(cube, temp10);
-	else if (minElementIndex == 10)
-		copyCube(cube, temp11);
-	else
-		copyCube(cube, temp12);
+	copyCube(cube, tempCubes[minElementIndex]);
+
+	if (minElementIndex < 6) {
+		string s = "Face ";
+		s += minElementIndex + '0';
+		s += " turned ";
+		s += direction[minElementIndex / 6];
+		moveList.push_back(s);
+	}
+	else {
+		string s = "Face ";
+		s += (minElementIndex - 6) + '0';
+		s += " turned ";
+		s += direction[minElementIndex / 6];
+		moveList.push_back(s);
+	}
+		
 
 	//free up all the space used
-	deallocateCube(temp1);
-	deallocateCube(temp2);
-	deallocateCube(temp3);
-	deallocateCube(temp4);
-	deallocateCube(temp5);
-	deallocateCube(temp6);
-	deallocateCube(temp7);
-	deallocateCube(temp8);
-	deallocateCube(temp9);
-	deallocateCube(temp10);
-	deallocateCube(temp11);
-	deallocateCube(temp12);
+	for (int i = 0; i < 12; i++) {
+		deallocateCube(tempCubes[i]);
+	}
 
 	return cube;
 }
 
-void implementaAStar(int*** cube, int*** finalCube)
+void solveWithAStar(int*** cube, int*** finalCube)
 {
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 20; i++) {
 		cube = aStarAlgorithm(cube, finalCube);
 
+		if (isEqual(cube, finalCube)) break;
+	}
+		
 	cout << "After A*:" << endl;
 	printCube(cube);
+
+	printMoveList();
 }
 
 int main()
@@ -1126,18 +1108,8 @@ int main()
 	cout << "Final Cube:" << endl;
 	printCube(finalCube);
 
-	/*cout << "Heuristic for initial state = " << heuristic(initialCube, finalCube) << endl;
-	cout << "Heuristic for solved state = " << heuristic(finalCube, finalCube) << endl;*/
-	//rotateCubeClockwise(initialCube, 0);
-	//rotateCubeClockwise(initialCube, 0);
-	//rotateCubeClockwise(initialCube, 0);
-
-	//rotateCubeCounterClockwise(initialCube, 0);
-	//rotateCubeClockwise(initialCube, 1);
-
-	//solveCube(initialCube);
-	
-	implementaAStar(initialCube, finalCube);
+	//solveWithIterativeDeepening(initialCube);
+	solveWithAStar(initialCube, finalCube);
 
 	deallocateCube(initialCube);
 	deallocateCube(finalCube);
